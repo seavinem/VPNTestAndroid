@@ -57,18 +57,15 @@ class HomeViewModel @Inject constructor(
         val country = _state.value.selectedCountry?.countryName.orEmpty()
         vpnJob?.cancel()
         vpnJob = viewModelScope.launch {
-            mockVpnService.startConnection(country).collect { vpnState ->
-                _state.update { it.copy(vpnState = vpnState) }
-                try {
-                    mockVpnService.startConnection(country).collect { vpnState ->
-                        _state.update { it.copy(vpnState = vpnState) }
-                    }
-                } catch (exception: CancellationException) {
-                    throw exception
-                } catch (_: Throwable) {
-                    _state.update { it.copy(vpnState = VpnState.DISCONNECTED) }
-                    _effect.send(HomeEffect.ShowConnectionError("Unable to connect. Please try again."))
+            try {
+                mockVpnService.startConnection(country).collect { vpnState ->
+                    _state.update { it.copy(vpnState = vpnState) }
                 }
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (_: Throwable) {
+                _state.update { it.copy(vpnState = VpnState.DISCONNECTED) }
+                _effect.send(HomeEffect.ShowConnectionError("Unable to connect. Please try again."))
             }
         }
     }
