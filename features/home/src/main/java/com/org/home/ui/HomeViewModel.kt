@@ -70,7 +70,7 @@ class HomeViewModel @Inject constructor(
                 throw exception
             } catch (_: Throwable) {
                 _state.update { it.copy(vpnState = VpnState.DISCONNECTED) }
-                _effect.send(HomeEffect.ShowConnectionError("Unable to connect. Please try again."))
+                _effect.send(HomeEffect.ShowConnectionError)
             }
         }
     }

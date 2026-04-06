@@ -19,11 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.org.design_system.theme.VpnColors
 import com.org.design_system.theme.VpnDemoTheme
 import com.org.design_system.theme.VpnTextStyle
+import com.org.features.home.R
 import com.org.home.model.CountryDomain
 
 @Composable
@@ -55,13 +57,13 @@ fun CountryCard(
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
-                    text = country?.countryName ?: "Select Location",
+                    text = country?.countryName ?: stringResource(R.string.home_select_location),
                     style = VpnTextStyle.CountryName,
                     color = VpnColors.OnSurface
                 )
                 Text(
                     text = country?.capital?.takeIf { it.isNotEmpty() }
-                        ?.let { "$it" } ?: "Choose a server",
+                        ?: stringResource(R.string.home_choose_server),
                     style = VpnTextStyle.CountryCapital,
                     color = VpnColors.Outline
                 )

@@ -12,11 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.org.design_system.theme.VpnColors
 import com.org.design_system.theme.VpnTextStyle
+import com.org.features.home.R
 
 @Composable
 fun FlagImage(
@@ -36,7 +38,7 @@ fun FlagImage(
         if (flagUrl.isNotEmpty()) {
             AsyncImage(
                 model = flagUrl,
-                contentDescription = "$countryName flag",
+                contentDescription = stringResource(R.string.home_flag_content_description, countryName),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(size)

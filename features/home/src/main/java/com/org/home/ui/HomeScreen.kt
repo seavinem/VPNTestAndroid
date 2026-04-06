@@ -24,12 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.org.design_system.theme.VpnColors
 import com.org.design_system.theme.VpnDemoTheme
+import com.org.features.home.R
 import com.org.home.compose.BottomSection
 import com.org.home.compose.ConnectionSection
 import com.org.home.compose.CountryBottomSheet
@@ -42,15 +44,13 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    var connectionErrorMessage by remember { mutableStateOf<String?>(null) }
+    var isConnectionErrorVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 HomeEffect.OnOpenBottomSheet -> Unit
-                is HomeEffect.ShowConnectionError -> {
-                    connectionErrorMessage = effect.message
-                }
+                HomeEffect.ShowConnectionError -> isConnectionErrorVisible = true
             }
         }
     }
@@ -58,8 +58,8 @@ fun HomeScreen(
     HomeScreenContent(
         state = state,
         handleEvent = viewModel::handleEvent,
-        connectionErrorMessage = connectionErrorMessage,
-        onConnectionErrorDismissed = { connectionErrorMessage = null }
+        isConnectionErrorVisible = isConnectionErrorVisible,
+        onConnectionErrorDismissed = { isConnectionErrorVisible = false }
     )
 }
 
@@ -68,7 +68,7 @@ fun HomeScreen(
 private fun HomeScreenContent(
     state: HomeState,
     handleEvent: (HomeEvent) -> Unit,
-    connectionErrorMessage: String? = null,
+    isConnectionErrorVisible: Boolean = false,
     onConnectionErrorDismissed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -138,24 +138,24 @@ private fun HomeScreenContent(
                 onDismissRequest = { isSettingsPlaceholderVisible = false },
                 confirmButton = {
                     TextButton(onClick = { isSettingsPlaceholderVisible = false }) {
-                        Text(text = "OK")
+                        Text(text = stringResource(R.string.home_common_ok))
                     }
                 },
-                title = { Text(text = "Settings") },
-                text = { Text(text = "Settings will be added later. For now this is a placeholder.") }
+                title = { Text(text = stringResource(R.string.home_settings)) },
+                text = { Text(text = stringResource(R.string.home_settings_placeholder_message)) }
             )
         }
 
-        if (connectionErrorMessage != null) {
+        if (isConnectionErrorVisible) {
             AlertDialog(
                 onDismissRequest = onConnectionErrorDismissed,
                 confirmButton = {
                     TextButton(onClick = onConnectionErrorDismissed) {
-                        Text(text = "OK")
+                        Text(text = stringResource(R.string.home_common_ok))
                     }
                 },
-                title = { Text(text = "Connection Error") },
-                text = { Text(text = connectionErrorMessage) }
+                title = { Text(text = stringResource(R.string.home_connection_error_title)) },
+                text = { Text(text = stringResource(R.string.home_connection_error_message)) }
             )
         }
     }
