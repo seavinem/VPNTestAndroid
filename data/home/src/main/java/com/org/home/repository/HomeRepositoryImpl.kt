@@ -10,7 +10,10 @@ class HomeRepositoryImpl @Inject constructor(
     private val countryDtoToDomainMapper: CountryDtoToDomainMapper
 ) : HomeRepository {
 
-    override suspend fun getAvailableCountries() :List<CountryDomain> = vpnWebService.getAvailableCountries().map {
-        countryDtoToDomainMapper(it)
-    }
+    override suspend fun getAvailableCountries(): List<CountryDomain> = vpnWebService
+        .getAvailableCountries()
+            .map { countryDtoToDomainMapper(it) }
+            .filter { it.countryName.isNotBlank() }
+            .distinctBy { it.countryName }
+            .sortedBy { it.countryName.lowercase() }
 }
