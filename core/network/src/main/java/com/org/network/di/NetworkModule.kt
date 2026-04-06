@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,14 +15,6 @@ const val CALL_TIMEOUT_SECONDS = 60L
 @Module
 @InstallIn(SingletonComponent::class)
 internal object NetworkModule {
-
-    @Provides
-    @Singleton
-    fun provideJson(): Json {
-        return Json {
-            ignoreUnknownKeys = true
-        }
-    }
 
     @Provides
     @Singleton
