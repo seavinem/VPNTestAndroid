@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.connectivity)
     implementation(projects.core.designSystem)
     implementation(projects.core.vpn)
 
