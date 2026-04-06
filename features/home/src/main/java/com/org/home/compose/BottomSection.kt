@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.org.design_system.theme.VpnColors
 import com.org.design_system.theme.VpnDemoTheme
+import com.org.features.home.R
 import com.org.design_system.theme.VpnTextStyle
 import com.org.home.model.CountryDomain
 import com.org.home.ui.HomeState
@@ -27,7 +29,7 @@ fun BottomSection(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
-            text = "Smart Location",
+            text = stringResource(R.string.home_smart_location),
             style = VpnTextStyle.SectionLabel,
             color = VpnColors.Outline,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -40,13 +42,19 @@ fun BottomSection(
 
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             InfoCard(
-                label = "Protocol",
-                value = "WireGuard®",
+                label = stringResource(R.string.home_protocol_label),
+                value = stringResource(R.string.home_protocol_value),
                 modifier = Modifier.weight(1f)
             )
             InfoCard(
-                label = "IP Address",
-                value = if (state.vpnState == VpnState.CONNECTED) "Hidden" else "Exposed",
+                label = stringResource(R.string.home_ip_address_label),
+                value = stringResource(
+                    if (state.vpnState == VpnState.CONNECTED) {
+                        R.string.home_ip_hidden
+                    } else {
+                        R.string.home_ip_exposed
+                    }
+                ),
                 modifier = Modifier.weight(1f)
             )
         }
