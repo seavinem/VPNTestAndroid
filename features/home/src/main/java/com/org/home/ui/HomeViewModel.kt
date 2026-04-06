@@ -2,6 +2,7 @@ package com.org.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.org.connectivity.monitor.NetworkMonitor
 import com.org.home.use_case.GetAllCountriesUseCase
 import com.org.vpn.model.VpnState
 import com.org.vpn.service.MockVpnService
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getAllCountriesUseCase: GetAllCountriesUseCase,
+    private val networkMonitor: NetworkMonitor,
     private val mockVpnService: MockVpnService
 ) : ViewModel() {
 
@@ -31,9 +34,11 @@ class HomeViewModel @Inject constructor(
     val effect: Flow<HomeEffect> = _effect.receiveAsFlow()
 
     private var vpnJob: Job? = null
+    private var getCountriesJob: Job? = null
 
     init {
         getCountries()
+        observeConnectivity()
     }
 
     internal fun handleEvent(event: HomeEvent) {
@@ -89,7 +94,9 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getCountries() {
-        viewModelScope.launch {
+        if (getCountriesJob?.isActive == true) return
+
+        getCountriesJob = viewModelScope.launch {
             runCatching {
                 getAllCountriesUseCase()
             }.onSuccess { countries ->
@@ -100,6 +107,18 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }.onFailure { println("HomeViewModel: error = ${it.message}") }
+        }
+    }
+
+    private fun observeConnectivity() {
+        viewModelScope.launch {
+            networkMonitor.isOnline
+                .distinctUntilChanged()
+                .collect { isOnline ->
+                    if (isOnline && _state.value.countries.isEmpty()) {
+                        getCountries()
+                    }
+                }
         }
     }
 }
