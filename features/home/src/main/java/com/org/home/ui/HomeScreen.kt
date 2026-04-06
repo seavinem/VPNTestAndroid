@@ -27,7 +27,7 @@ import com.org.home.compose.ConnectionSection
 import com.org.home.compose.CountryBottomSheet
 import com.org.home.compose.HomeTopBar
 import com.org.home.model.CountryDomain
-import com.org.home.model.VpnState
+import com.org.vpn.model.VpnState
 
 @Composable
 fun HomeScreen(

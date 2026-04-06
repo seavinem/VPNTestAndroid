@@ -13,8 +13,8 @@ import com.org.design_system.theme.VpnColors
 import com.org.design_system.theme.VpnDemoTheme
 import com.org.design_system.theme.VpnTextStyle
 import com.org.home.model.CountryDomain
-import com.org.home.model.VpnState
 import com.org.home.ui.HomeState
+import com.org.vpn.model.VpnState
 
 @Composable
 fun BottomSection(

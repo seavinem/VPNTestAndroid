@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.org.design_system.theme.VpnColors
 import com.org.design_system.theme.VpnDemoTheme
 import com.org.design_system.theme.VpnTextStyle
-import com.org.home.model.VpnState
+import com.org.vpn.model.VpnState
 
 @Composable
 fun ConnectionSection(
@@ -54,20 +54,17 @@ fun ConnectionSection(
     val orbBackground = when (vpnState) {
         VpnState.CONNECTED -> VpnColors.Tertiary.copy(alpha = 0.15f)
         VpnState.CONNECTING -> VpnColors.Primary.copy(alpha = 0.12f)
-        VpnState.ERROR -> VpnColors.Error.copy(alpha = 0.15f)
-        else -> VpnColors.SurfaceVariant.copy(alpha = 0.6f)
+        VpnState.DISCONNECTED -> VpnColors.SurfaceVariant.copy(alpha = 0.6f)
     }
     val iconTint = when (vpnState) {
         VpnState.CONNECTED -> VpnColors.Tertiary
         VpnState.CONNECTING -> VpnColors.Primary
-        VpnState.ERROR -> VpnColors.Error
-        else -> VpnColors.Outline
+        VpnState.DISCONNECTED -> VpnColors.Outline
     }
     val glowColor = when (vpnState) {
         VpnState.CONNECTED -> VpnColors.Tertiary
         VpnState.CONNECTING -> VpnColors.Primary
-        VpnState.ERROR -> VpnColors.Error
-        else -> VpnColors.Primary
+        VpnState.DISCONNECTED -> VpnColors.Primary
     }
 
     Column(
@@ -134,8 +131,6 @@ fun ConnectionSection(
                 text = when (vpnState) {
                     VpnState.CONNECTED -> "Connected"
                     VpnState.CONNECTING -> "Connecting..."
-                    VpnState.DISCONNECTING -> "Disconnecting..."
-                    VpnState.ERROR -> "Connection Failed"
                     VpnState.DISCONNECTED -> "Not Connected"
                 },
                 style = VpnTextStyle.StatusTitle,
@@ -145,8 +140,7 @@ fun ConnectionSection(
                 text = when (vpnState) {
                     VpnState.CONNECTED -> "YOUR CONNECTION IS SECURE"
                     VpnState.CONNECTING -> "ESTABLISHING SECURE TUNNEL"
-                    VpnState.ERROR -> "TAP TO TRY AGAIN"
-                    else -> "TAP TO SECURE YOUR CONNECTION"
+                    VpnState.DISCONNECTED -> "TAP TO SECURE YOUR CONNECTION"
                 },
                 style = VpnTextStyle.StatusSubtitle,
                 color = VpnColors.Outline,
@@ -177,13 +171,5 @@ private fun ConnectionSectionConnectingPreview() {
 private fun ConnectionSectionConnectedPreview() {
     VpnDemoTheme {
         ConnectionSection(vpnState = VpnState.CONNECTED, onOrbClick = {})
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF0F1923)
-@Composable
-private fun ConnectionSectionErrorPreview() {
-    VpnDemoTheme {
-        ConnectionSection(vpnState = VpnState.ERROR, onOrbClick = {})
     }
 }

@@ -2,9 +2,8 @@ package com.org.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.org.home.mappers.toDomain
-import com.org.home.model.VpnState
 import com.org.home.use_case.GetAllCountriesUseCase
+import com.org.vpn.model.VpnState
 import com.org.vpn.service.MockVpnService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -51,8 +50,8 @@ class HomeViewModel @Inject constructor(
         val country = _state.value.selectedCountry?.countryName.orEmpty()
         vpnJob?.cancel()
         vpnJob = viewModelScope.launch {
-            mockVpnService.startConnection(country).collect { serviceState ->
-                _state.update { it.copy(vpnState = serviceState.toDomain()) }
+            mockVpnService.startConnection(country).collect { vpnState ->
+                _state.update { it.copy(vpnState = vpnState) }
             }
         }
     }
