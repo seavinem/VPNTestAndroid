@@ -22,7 +22,10 @@ import com.org.design_system.theme.VpnDemoTheme
 import com.org.design_system.theme.VpnTextStyle
 
 @Composable
-fun HomeTopBar(modifier: Modifier = Modifier) {
+fun HomeTopBar(
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -36,7 +39,7 @@ fun HomeTopBar(modifier: Modifier = Modifier) {
             style = VpnTextStyle.AppTitle,
             color = Color.White
         )
-        IconButton(onClick = {}) {
+        IconButton(onClick = onSettingsClick) {
             Icon(
                 imageVector = Icons.Filled.Settings,
                 contentDescription = "Settings",
@@ -51,6 +54,6 @@ fun HomeTopBar(modifier: Modifier = Modifier) {
 @Composable
 private fun HomeTopBarPreview() {
     VpnDemoTheme {
-        HomeTopBar()
+        HomeTopBar(onSettingsClick = {})
     }
 }

@@ -96,7 +96,9 @@ private fun HomeScreenContent(
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-            HomeTopBar()
+            HomeTopBar(
+                onSettingsClick = { isSettingsPlaceholderVisible = true }
+            )
 
             Column(
                 modifier = Modifier
@@ -128,6 +130,19 @@ private fun HomeScreenContent(
                 onSearchQueryChanged = { handleEvent(HomeEvent.OnSearchQueryChanged(it)) },
                 onCountrySelected = { handleEvent(HomeEvent.OnCountrySelected(it)) },
                 onDismiss = { handleEvent(HomeEvent.OnBottomSheetDismissed) }
+            )
+        }
+
+        if (isSettingsPlaceholderVisible) {
+            AlertDialog(
+                onDismissRequest = { isSettingsPlaceholderVisible = false },
+                confirmButton = {
+                    TextButton(onClick = { isSettingsPlaceholderVisible = false }) {
+                        Text(text = "OK")
+                    }
+                },
+                title = { Text(text = "Settings") },
+                text = { Text(text = "Settings will be added later. For now this is a placeholder.") }
             )
         }
 
