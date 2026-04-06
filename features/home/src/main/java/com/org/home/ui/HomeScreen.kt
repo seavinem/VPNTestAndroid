@@ -131,19 +131,6 @@ private fun HomeScreenContent(
             )
         }
 
-        if (isSettingsPlaceholderVisible) {
-            AlertDialog(
-                onDismissRequest = { isSettingsPlaceholderVisible = false },
-                confirmButton = {
-                    TextButton(onClick = { isSettingsPlaceholderVisible = false }) {
-                        Text(text = "OK")
-                    }
-                },
-                title = { Text(text = "Settings") },
-                text = { Text(text = "Settings will be added later. For now this is a placeholder.") }
-            )
-        }
-
         if (connectionErrorMessage != null) {
             AlertDialog(
                 onDismissRequest = onConnectionErrorDismissed,
