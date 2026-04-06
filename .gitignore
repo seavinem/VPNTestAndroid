@@ -1,0 +1,36 @@
+# IntelliJ / Android Studio
+*.iml
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+
+# Gradle / Kotlin
+.gradle/
+.kotlin/
+build/
+
+# Local machine config
+local.properties
+
+# Native build outputs
+.externalNativeBuild/
+.cxx/
+
+# Android Studio captures
+captures/
+
+# Signing / local secrets
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
