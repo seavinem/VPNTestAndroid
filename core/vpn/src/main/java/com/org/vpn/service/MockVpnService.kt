@@ -11,14 +11,12 @@ class MockVpnService @Inject constructor() {
 
     fun startConnection(country: String): Flow<VpnState> = flow {
         emit(VpnState.CONNECTING)
+        delay(2_000L)
 
-        delay(Random.nextLong(1_000L, 3_000L))
-
-        if (Random.nextBoolean()) {
-            delay(Random.nextLong(500L, 1_500L))
-            emit(VpnState.CONNECTED)
-        } else {
-            emit(VpnState.ERROR)
+        if (country.isBlank() || !Random.nextBoolean()) {
+            throw IllegalStateException("Connection failed")
         }
+
+        emit(VpnState.CONNECTED)
     }
 }

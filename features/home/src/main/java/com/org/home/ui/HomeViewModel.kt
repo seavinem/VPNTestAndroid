@@ -2,15 +2,18 @@ package com.org.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.org.home.mappers.toDomain
-import com.org.home.model.VpnState
 import com.org.home.use_case.GetAllCountriesUseCase
+import com.org.vpn.model.VpnState
 import com.org.vpn.service.MockVpnService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +26,9 @@ class HomeViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()
+
+    private val _effect = Channel<HomeEffect>(capacity = Channel.BUFFERED)
+    val effect: Flow<HomeEffect> = _effect.receiveAsFlow()
 
     private var vpnJob: Job? = null
 
@@ -51,8 +57,15 @@ class HomeViewModel @Inject constructor(
         val country = _state.value.selectedCountry?.countryName.orEmpty()
         vpnJob?.cancel()
         vpnJob = viewModelScope.launch {
-            mockVpnService.startConnection(country).collect { serviceState ->
-                _state.update { it.copy(vpnState = serviceState.toDomain()) }
+            try {
+                mockVpnService.startConnection(country).collect { vpnState ->
+                    _state.update { it.copy(vpnState = vpnState) }
+                }
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (_: Throwable) {
+                _state.update { it.copy(vpnState = VpnState.DISCONNECTED) }
+                _effect.send(HomeEffect.ShowConnectionError("Unable to connect. Please try again."))
             }
         }
     }
