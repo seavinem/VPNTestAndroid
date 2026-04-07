@@ -3,6 +3,7 @@ package com.org.home.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -81,16 +83,21 @@ private fun HomeScreenContent(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isSettingsPlaceholderVisible by rememberSaveable { mutableStateOf(false) }
 
-    Box(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(VpnColors.Background)
     ) {
+        val layoutMetrics = rememberHomeLayoutMetrics(
+            availableWidth = maxWidth,
+            availableHeight = maxHeight
+        )
+
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(layoutMetrics.glowHeight)
                 .background(
                     Brush.radialGradient(
                         colors = listOf(
@@ -109,21 +116,21 @@ private fun HomeScreenContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 48.dp),
+                    .padding(horizontal = layoutMetrics.horizontalPadding)
+                    .padding(bottom = layoutMetrics.contentBottomPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 ConnectionSection(
                     vpnState = state.vpnState,
                     onOrbClick = { handleEvent(HomeEvent.OnConnectClicked) },
-                    modifier = Modifier.padding(top = 48.dp)
+                    modifier = Modifier.padding(top = layoutMetrics.connectionTopPadding)
                 )
 
                 BottomSection(
                     state = state,
                     onSelectCountry = { handleEvent(HomeEvent.OnSelectCountryClicked) },
-                    modifier = Modifier.padding(bottom = 48.dp)
+                    modifier = Modifier.padding(bottom = layoutMetrics.bottomSectionBottomPadding)
                 )
             }
         }
@@ -180,6 +187,50 @@ private fun HomeScreenContent(
         }
     }
 }
+
+@Composable
+private fun rememberHomeLayoutMetrics(
+    availableWidth: Dp,
+    availableHeight: Dp
+): HomeLayoutMetrics {
+    val horizontalPadding = when {
+        availableWidth < 360.dp -> 20.dp
+        availableWidth < 600.dp -> 24.dp
+        else -> 32.dp
+    }
+    val connectionTopPadding = when {
+        availableHeight < 700.dp -> 24.dp
+        availableHeight < 900.dp -> 40.dp
+        else -> 56.dp
+    }
+    val contentBottomPadding = when {
+        availableHeight < 700.dp -> 24.dp
+        availableHeight < 900.dp -> 40.dp
+        else -> 56.dp
+    }
+    val bottomSectionBottomPadding = when {
+        availableHeight < 700.dp -> 8.dp
+        availableHeight < 900.dp -> 20.dp
+        else -> 28.dp
+    }
+    val glowHeight = (availableHeight * 0.34f).coerceIn(220.dp, 360.dp)
+
+    return HomeLayoutMetrics(
+        horizontalPadding = horizontalPadding,
+        connectionTopPadding = connectionTopPadding,
+        contentBottomPadding = contentBottomPadding,
+        bottomSectionBottomPadding = bottomSectionBottomPadding,
+        glowHeight = glowHeight
+    )
+}
+
+private data class HomeLayoutMetrics(
+    val horizontalPadding: Dp,
+    val connectionTopPadding: Dp,
+    val contentBottomPadding: Dp,
+    val bottomSectionBottomPadding: Dp,
+    val glowHeight: Dp
+)
 
 @Preview(showBackground = false, backgroundColor = 0xFF0F1923)
 @Composable

@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -30,11 +31,28 @@ fun BottomSection(
     onSelectCountry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val configuration = LocalConfiguration.current
+    val sectionSpacing = when {
+        configuration.screenHeightDp < 700 -> 18.dp
+        configuration.screenHeightDp > 920 -> 28.dp
+        else -> 24.dp
+    }
+    val topSectionSpacing = when {
+        configuration.screenHeightDp < 700 -> 10.dp
+        configuration.screenHeightDp > 920 -> 16.dp
+        else -> 12.dp
+    }
+    val infoCardsSpacing = when {
+        configuration.screenWidthDp < 360 -> 12.dp
+        configuration.screenWidthDp > 600 -> 20.dp
+        else -> 16.dp
+    }
+
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(sectionSpacing)
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(topSectionSpacing)) {
             Text(
                 text = stringResource(R.string.home_smart_location),
                 style = VpnTextStyle.SectionLabel,
@@ -71,7 +89,7 @@ fun BottomSection(
             )
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(infoCardsSpacing)) {
             InfoCard(
                 label = stringResource(R.string.home_protocol_label),
                 value = stringResource(R.string.home_protocol_value),
