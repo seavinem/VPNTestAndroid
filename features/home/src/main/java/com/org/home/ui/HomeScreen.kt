@@ -122,7 +122,8 @@ private fun HomeScreenContent(
 
                 BottomSection(
                     state = state,
-                    onSelectCountry = { handleEvent(HomeEvent.OnSelectCountryClicked) }
+                    onSelectCountry = { handleEvent(HomeEvent.OnSelectCountryClicked) },
+                    modifier = Modifier.padding(bottom = 48.dp)
                 )
             }
         }

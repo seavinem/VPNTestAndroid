@@ -34,40 +34,42 @@ fun BottomSection(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Text(
-            text = stringResource(R.string.home_smart_location),
-            style = VpnTextStyle.SectionLabel,
-            color = VpnColors.Outline,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(
+                text = stringResource(R.string.home_smart_location),
+                style = VpnTextStyle.SectionLabel,
+                color = VpnColors.Outline,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
 
-        if (state.isLoading) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.home_loading_locations),
-                    style = VpnTextStyle.CountryCapital,
-                    color = VpnColors.OnSurface.copy(alpha = 0.72f)
-                )
-                LinearProgressIndicator(
+            if (state.isLoading) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(100.dp)),
-                    color = VpnColors.Primary,
-                    trackColor = Color.White.copy(alpha = 0.08f)
-                )
+                        .padding(horizontal = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.home_loading_locations),
+                        style = VpnTextStyle.CountryCapital,
+                        color = VpnColors.OnSurface.copy(alpha = 0.72f)
+                    )
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(100.dp)),
+                        color = VpnColors.Primary,
+                        trackColor = Color.White.copy(alpha = 0.08f)
+                    )
+                }
             }
-        }
 
-        CountryCard(
-            country = state.selectedCountry,
-            onClick = onSelectCountry
-        )
+            CountryCard(
+                country = state.selectedCountry,
+                onClick = onSelectCountry
+            )
+        }
 
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             InfoCard(
