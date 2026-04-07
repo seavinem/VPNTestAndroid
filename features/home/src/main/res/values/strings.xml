@@ -5,9 +5,12 @@
     <string name="home_settings_placeholder_message">Settings will be added later. For now this is a placeholder.</string>
     <string name="home_connection_error_title">Connection Error</string>
     <string name="home_connection_error_message">Unable to connect. Please try again.</string>
+    <string name="home_countries_error_title">Failed to Load Countries</string>
+    <string name="home_countries_error_message">Unable to load server list. Please check your connection and try again.</string>
     <string name="home_common_ok">OK</string>
 
     <string name="home_smart_location">Smart Location</string>
+    <string name="home_loading_locations">Loading locations</string>
     <string name="home_protocol_label">Protocol</string>
     <string name="home_protocol_value">WireGuard®</string>
     <string name="home_ip_address_label">IP Address</string>

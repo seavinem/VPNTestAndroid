@@ -3,9 +3,15 @@ package com.org.home.compose
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +40,29 @@ fun BottomSection(
             color = VpnColors.Outline,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
+
+        if (state.isLoading) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.home_loading_locations),
+                    style = VpnTextStyle.CountryCapital,
+                    color = VpnColors.OnSurface.copy(alpha = 0.72f)
+                )
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(100.dp)),
+                    color = VpnColors.Primary,
+                    trackColor = Color.White.copy(alpha = 0.08f)
+                )
+            }
+        }
 
         CountryCard(
             country = state.selectedCountry,
@@ -67,6 +96,7 @@ private fun BottomSectionDisconnectedPreview() {
     VpnDemoTheme {
         BottomSection(
             state = HomeState(
+                isLoading = true,
                 vpnState = VpnState.DISCONNECTED,
                 selectedCountry = CountryDomain(countryName = "Germany", capital = "Berlin", flagUrl = "")
             ),
@@ -81,6 +111,7 @@ private fun BottomSectionConnectedPreview() {
     VpnDemoTheme {
         BottomSection(
             state = HomeState(
+                isLoading = true,
                 vpnState = VpnState.CONNECTED,
                 selectedCountry = CountryDomain(countryName = "Germany", capital = "Berlin", flagUrl = "")
             ),

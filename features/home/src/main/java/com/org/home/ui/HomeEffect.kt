@@ -4,4 +4,5 @@ sealed interface HomeEffect {
 
     data object OnOpenBottomSheet : HomeEffect
     data object ShowConnectionError : HomeEffect
+    data object ShowCountriesError : HomeEffect
 }

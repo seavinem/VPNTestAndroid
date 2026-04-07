@@ -45,12 +45,14 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var isConnectionErrorVisible by remember { mutableStateOf(false) }
+    var isCountriesErrorVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 HomeEffect.OnOpenBottomSheet -> Unit
                 HomeEffect.ShowConnectionError -> isConnectionErrorVisible = true
+                HomeEffect.ShowCountriesError -> isCountriesErrorVisible = true
             }
         }
     }
@@ -59,7 +61,9 @@ fun HomeScreen(
         state = state,
         handleEvent = viewModel::handleEvent,
         isConnectionErrorVisible = isConnectionErrorVisible,
-        onConnectionErrorDismissed = { isConnectionErrorVisible = false }
+        onConnectionErrorDismissed = { isConnectionErrorVisible = false },
+        isCountriesErrorVisible = isCountriesErrorVisible,
+        onCountriesErrorDismissed = { isCountriesErrorVisible = false }
     )
 }
 
@@ -70,6 +74,8 @@ private fun HomeScreenContent(
     handleEvent: (HomeEvent) -> Unit,
     isConnectionErrorVisible: Boolean = false,
     onConnectionErrorDismissed: () -> Unit = {},
+    isCountriesErrorVisible: Boolean = false,
+    onCountriesErrorDismissed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -156,6 +162,19 @@ private fun HomeScreenContent(
                 },
                 title = { Text(text = stringResource(R.string.home_connection_error_title)) },
                 text = { Text(text = stringResource(R.string.home_connection_error_message)) }
+            )
+        }
+
+        if (isCountriesErrorVisible) {
+            AlertDialog(
+                onDismissRequest = onCountriesErrorDismissed,
+                confirmButton = {
+                    TextButton(onClick = onCountriesErrorDismissed) {
+                        Text(text = stringResource(R.string.home_common_ok))
+                    }
+                },
+                title = { Text(text = stringResource(R.string.home_countries_error_title)) },
+                text = { Text(text = stringResource(R.string.home_countries_error_message)) }
             )
         }
     }
