@@ -23,6 +23,7 @@ dependencies {
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.room.gradlePlugin)
 }
 
 gradlePlugin {
@@ -46,6 +47,10 @@ gradlePlugin {
         register("hilt") {
             id = libs.plugins.vpn.hilt.get().pluginId
             implementationClass = "HiltConventionPlugin"
+        }
+        register("androidRoom") {
+            id = libs.plugins.vpn.android.room.get().pluginId
+            implementationClass = "AndroidRoomConventionPlugin"
         }
     }
 }

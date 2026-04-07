@@ -2,7 +2,7 @@ package com.org.home.ui
 
 import androidx.compose.runtime.Immutable
 import com.org.home.model.CountryDomain
-import com.org.home.model.VpnState
+import com.org.vpn.model.VpnState
 
 @Immutable
 data class HomeState(

@@ -15,14 +15,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.org.design_system.theme.VpnColors
 import com.org.design_system.theme.VpnDemoTheme
 import com.org.design_system.theme.VpnTextStyle
+import com.org.features.home.R
 
 @Composable
-fun HomeTopBar(modifier: Modifier = Modifier) {
+fun HomeTopBar(
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -32,14 +37,14 @@ fun HomeTopBar(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "SecureVPN",
+            text = stringResource(R.string.home_app_title),
             style = VpnTextStyle.AppTitle,
             color = Color.White
         )
-        IconButton(onClick = {}) {
+        IconButton(onClick = onSettingsClick) {
             Icon(
                 imageVector = Icons.Filled.Settings,
-                contentDescription = "Settings",
+                contentDescription = stringResource(R.string.home_settings),
                 tint = VpnColors.Primary,
                 modifier = Modifier.size(24.dp)
             )
@@ -51,6 +56,6 @@ fun HomeTopBar(modifier: Modifier = Modifier) {
 @Composable
 private fun HomeTopBarPreview() {
     VpnDemoTheme {
-        HomeTopBar()
+        HomeTopBar(onSettingsClick = {})
     }
 }

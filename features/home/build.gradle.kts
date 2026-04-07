@@ -9,11 +9,13 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.connectivity)
     implementation(projects.core.designSystem)
     implementation(projects.core.vpn)
 
     implementation(projects.domain.home)
 
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.coil.compose)
 }

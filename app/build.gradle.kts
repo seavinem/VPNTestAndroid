@@ -24,15 +24,11 @@ android {
 
 dependencies {
     implementation(projects.data.home)
-
-    implementation(projects.domain.home)
-
     implementation(projects.features.home)
-
     implementation(projects.core.designSystem)
-    implementation(projects.core.network)
-    implementation(projects.core.vpn)
+    implementation(projects.core.database)
 
+    implementation(libs.androidx.activity.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
 

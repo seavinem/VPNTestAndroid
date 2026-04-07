@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_app_title">SecureVPN</string>
+    <string name="home_settings">Settings</string>
+    <string name="home_settings_placeholder_message">Settings will be added later. For now this is a placeholder.</string>
+    <string name="home_connection_error_title">Connection Error</string>
+    <string name="home_connection_error_message">Unable to connect. Please try again.</string>
+    <string name="home_countries_error_title">Failed to Load Countries</string>
+    <string name="home_countries_error_message">Unable to load server list. Please check your connection and try again.</string>
+    <string name="home_common_ok">OK</string>
+
+    <string name="home_smart_location">Smart Location</string>
+    <string name="home_loading_locations">Loading locations</string>
+    <string name="home_protocol_label">Protocol</string>
+    <string name="home_protocol_value">WireGuard®</string>
+    <string name="home_ip_address_label">IP Address</string>
+    <string name="home_ip_hidden">Hidden</string>
+    <string name="home_ip_exposed">Exposed</string>
+
+    <string name="home_select_location">Select Location</string>
+    <string name="home_choose_server">Choose a server</string>
+    <string name="home_sheet_select_location">Select Location</string>
+    <string name="home_search_countries_placeholder">Search countries or cities…</string>
+    <string name="home_selected">Selected</string>
+    <string name="home_flag_content_description">%1$s flag</string>
+
+    <string name="home_connect">Connect</string>
+    <string name="home_disconnect">Disconnect</string>
+    <string name="home_status_connected">Connected</string>
+    <string name="home_status_connecting">Connecting…</string>
+    <string name="home_status_disconnected">Disconnected</string>
+    <string name="home_status_connected_subtitle">YOUR CONNECTION IS SECURE</string>
+    <string name="home_status_connecting_subtitle">ESTABLISHING SECURE TUNNEL</string>
+    <string name="home_status_disconnected_subtitle">TAP TO SECURE YOUR CONNECTION</string>
+</resources>

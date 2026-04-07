@@ -2,15 +2,20 @@ package com.org.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.org.home.mappers.toDomain
-import com.org.home.model.VpnState
+import com.org.connectivity.monitor.NetworkMonitor
 import com.org.home.use_case.GetAllCountriesUseCase
+import com.org.vpn.model.VpnState
 import com.org.vpn.service.MockVpnService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,16 +23,22 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getAllCountriesUseCase: GetAllCountriesUseCase,
+    private val networkMonitor: NetworkMonitor,
     private val mockVpnService: MockVpnService
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
+    private val _effect = Channel<HomeEffect>(capacity = Channel.BUFFERED)
+    val effect: Flow<HomeEffect> = _effect.receiveAsFlow()
+
     private var vpnJob: Job? = null
+    private var getCountriesJob: Job? = null
 
     init {
         getCountries()
+        observeConnectivity()
     }
 
     internal fun handleEvent(event: HomeEvent) {
@@ -51,8 +62,15 @@ class HomeViewModel @Inject constructor(
         val country = _state.value.selectedCountry?.countryName.orEmpty()
         vpnJob?.cancel()
         vpnJob = viewModelScope.launch {
-            mockVpnService.startConnection(country).collect { serviceState ->
-                _state.update { it.copy(vpnState = serviceState.toDomain()) }
+            try {
+                mockVpnService.startConnection(country).collect { vpnState ->
+                    _state.update { it.copy(vpnState = vpnState) }
+                }
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (_: Throwable) {
+                _state.update { it.copy(vpnState = VpnState.DISCONNECTED) }
+                _effect.send(HomeEffect.ShowConnectionError)
             }
         }
     }
@@ -76,17 +94,37 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getCountries() {
-        viewModelScope.launch {
-            runCatching {
-                getAllCountriesUseCase()
-            }.onSuccess { countries ->
+        if (getCountriesJob?.isActive == true) return
+
+        getCountriesJob = viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                val countries = getAllCountriesUseCase()
                 _state.update {
                     it.copy(
+                        isLoading = false,
                         countries = countries,
                         selectedCountry = countries.firstOrNull()
                     )
                 }
-            }.onFailure { println("HomeViewModel: error = ${it.message}") }
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (_: Throwable) {
+                _state.update { it.copy(isLoading = false) }
+                _effect.send(HomeEffect.ShowCountriesError)
+            }
+        }
+    }
+
+    private fun observeConnectivity() {
+        viewModelScope.launch {
+            networkMonitor.isOnline
+                .distinctUntilChanged()
+                .collect { isOnline ->
+                    if (isOnline && _state.value.countries.isEmpty()) {
+                        getCountries()
+                    }
+                }
         }
     }
 }
