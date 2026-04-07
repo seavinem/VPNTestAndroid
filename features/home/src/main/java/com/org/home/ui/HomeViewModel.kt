@@ -97,16 +97,22 @@ class HomeViewModel @Inject constructor(
         if (getCountriesJob?.isActive == true) return
 
         getCountriesJob = viewModelScope.launch {
-            runCatching {
-                getAllCountriesUseCase()
-            }.onSuccess { countries ->
+            _state.update { it.copy(isLoading = true) }
+            try {
+                val countries = getAllCountriesUseCase()
                 _state.update {
                     it.copy(
+                        isLoading = false,
                         countries = countries,
                         selectedCountry = countries.firstOrNull()
                     )
                 }
-            }.onFailure { println("HomeViewModel: error = ${it.message}") }
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (_: Throwable) {
+                _state.update { it.copy(isLoading = false) }
+                _effect.send(HomeEffect.ShowCountriesError)
+            }
         }
     }
 
