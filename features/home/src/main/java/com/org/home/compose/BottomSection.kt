@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -30,46 +31,65 @@ fun BottomSection(
     onSelectCountry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val configuration = LocalConfiguration.current
+    val sectionSpacing = when {
+        configuration.screenHeightDp < 700 -> 18.dp
+        configuration.screenHeightDp > 920 -> 28.dp
+        else -> 24.dp
+    }
+    val topSectionSpacing = when {
+        configuration.screenHeightDp < 700 -> 10.dp
+        configuration.screenHeightDp > 920 -> 16.dp
+        else -> 12.dp
+    }
+    val infoCardsSpacing = when {
+        configuration.screenWidthDp < 360 -> 12.dp
+        configuration.screenWidthDp > 600 -> 20.dp
+        else -> 16.dp
+    }
+
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(sectionSpacing)
     ) {
-        Text(
-            text = stringResource(R.string.home_smart_location),
-            style = VpnTextStyle.SectionLabel,
-            color = VpnColors.Outline,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(topSectionSpacing)) {
+            Text(
+                text = stringResource(R.string.home_smart_location),
+                style = VpnTextStyle.SectionLabel,
+                color = VpnColors.Outline,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
 
-        if (state.isLoading) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.home_loading_locations),
-                    style = VpnTextStyle.CountryCapital,
-                    color = VpnColors.OnSurface.copy(alpha = 0.72f)
-                )
-                LinearProgressIndicator(
+            if (state.isLoading) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(100.dp)),
-                    color = VpnColors.Primary,
-                    trackColor = Color.White.copy(alpha = 0.08f)
-                )
+                        .padding(horizontal = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.home_loading_locations),
+                        style = VpnTextStyle.CountryCapital,
+                        color = VpnColors.OnSurface.copy(alpha = 0.72f)
+                    )
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(100.dp)),
+                        color = VpnColors.Primary,
+                        trackColor = Color.White.copy(alpha = 0.08f)
+                    )
+                }
             }
+
+            CountryCard(
+                country = state.selectedCountry,
+                onClick = onSelectCountry
+            )
         }
 
-        CountryCard(
-            country = state.selectedCountry,
-            onClick = onSelectCountry
-        )
-
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(infoCardsSpacing)) {
             InfoCard(
                 label = stringResource(R.string.home_protocol_label),
                 value = stringResource(R.string.home_protocol_value),
