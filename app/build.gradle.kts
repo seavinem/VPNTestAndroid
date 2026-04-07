@@ -26,6 +26,7 @@ dependencies {
     implementation(projects.data.home)
     implementation(projects.features.home)
     implementation(projects.core.designSystem)
+    implementation(projects.core.database)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.coil.compose)

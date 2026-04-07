@@ -1,0 +1,43 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "d3cf69839ba6d013465cf2bd7975fee9",
+    "entities": [
+      {
+        "tableName": "countries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`countryName` TEXT NOT NULL, `capital` TEXT NOT NULL, `flagUrl` TEXT NOT NULL, PRIMARY KEY(`countryName`))",
+        "fields": [
+          {
+            "fieldPath": "countryName",
+            "columnName": "countryName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "capital",
+            "columnName": "capital",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flagUrl",
+            "columnName": "flagUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "countryName"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd3cf69839ba6d013465cf2bd7975fee9')"
+    ]
+  }
+}
